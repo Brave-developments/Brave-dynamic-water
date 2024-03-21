@@ -34,7 +34,32 @@ RegisterCommand('resetwater', function(source, args)
     ResetWater()
 end)
 
+-- Change this value to set the maximum flood height
+local maxFloodHeight = 400
+-- Change this value to increase/decrease the rate at which the water height changes
+local increaseRate = 0.1
+-- Change this value to increase/decrease the time it takes to reach maxFloodHeight.
+local threadWait = 100
+
 RegisterCommand('flood', function(source, args)
+    Citizen.CreateThread(function()
+        local pCoords, wCoords, allPeds = nil, nil, nil
+        while true do
+            ped = PlayerPedId()
+            pCoords = GetEntityCoords(ped)
+            wCoords = GetWaterQuadAtCoords_3d(pCoords.x, pCoords.y, pCoords.z)
+
+            if wCoords ~= -1 then
+                allPeds = GetGamePool('CPed')
+                for i = 1, #allPeds do
+                    SetPedConfigFlag(allPeds[i], 65, true)
+                    SetPedDiesInWater(allPeds[i], true)
+                end
+            end
+            Citizen.Wait(5000)
+        end
+    end)
+
     Citizen.CreateThread(function()
         -- Things you could do to further enhance:
         --  - Configure WaveQuads and increase amplitude, remember disable all CalmingQuads which take priority!
@@ -48,12 +73,6 @@ RegisterCommand('flood', function(source, args)
 
         local waterQuadCount = GetWaterQuadCount()
         local isFlooding = true
-        -- Change this value to set the maximum flood height
-        local maxFloodHeight = 400
-        -- Change this value to increase/decrease the rate at which the water height changes
-        local increaseRate = 0.1
-        -- Change this value to increase/decrease the time it takes to reach maxFloodHeight.
-        local threadWait = 500
 
         while isFlooding do
             for i = 1, waterQuadCount, 1 do
