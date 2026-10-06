@@ -4,16 +4,31 @@ game 'gta5'
 description 'tofu-dynamic-water'
 version '0.0.1'
 
+lua54 'yes'
+
+shared_scripts {
+    'config.lua'
+}
+
 client_scripts {
-	'client/*.lua',
+    'client/*.lua',
+}
+
+server_scripts {
+    'server/*.lua'
 }
 
 files {
-	-- default water.xml from OpenIV
-	-- 'water.xml',
-	-- custom water.xml that floods the entire map
-	'flood.xml'
+    'html/index.html',
+    'html/sound.js',
+    'sounds/*.ogg',
+    -- default water.xml from OpenIV
+    -- 'water.xml',
+    -- custom water.xml that floods the entire map
+    'flood.xml'
 }
+
+ui_page 'html/index.html'
 
 -- This must be set to the XML file loaded. If you omit this attribute Peds & Vehicles etc.. won't be affected by Water
 -- and they will continue to drive and walk around underwater.
